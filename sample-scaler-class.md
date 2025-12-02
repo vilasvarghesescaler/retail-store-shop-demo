@@ -108,11 +108,13 @@ PUBLIC_SUBNET_1="subnet-01c39edbf3f4c6b5b"
 PUBLIC_SUBNET_2="subnet-0c75f1b5695348705"
 CLUSTER_ROLE_ARN=$(aws iam get-role --role-name ScalerEKSClusterRole --query "Role.Arn" --output text)
 
+#Create a new security group 
+
 # Create EKS cluster
 aws eks create-cluster \
   --name scaler-eks-cluster \
   --role-arn $CLUSTER_ROLE_ARN \
-  --resources-vpc-config subnetIds=$PUBLIC_SUBNET_1,$PUBLIC_SUBNET_2,securityGroupIds= \
+  --resources-vpc-config subnetIds=$PUBLIC_SUBNET_1,$PUBLIC_SUBNET_2,securityGroupIds=<security group id> \
   --kubernetes-version 1.33
 
 # Wait for cluster to be created (this may take 10-15 minutes)
@@ -129,14 +131,14 @@ kubectl get svc
 
 ```bash
 # Get the latest Amazon Linux 2 AMI optimized for EKS
-AMI_ID=$(aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.33/amazon-linux-2/recommended/image_id --query "Parameter.Value" --output text)
+AMI_ID=$(aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.32  /amazon-linux-2/recommended/image_id --query "Parameter.Value" --output text)
 
 # Create security group for worker nodes
-SECURITY_GROUP_ID=$(aws ec2 create-security-group \
-  --group-name ScalerEKSNodeSG \
-  --description "Security group for EKS worker nodes" \
-  --vpc-id $VPC_ID \
-  --query "GroupId" --output text)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  SECURITY_GROUP_ID=$(aws ec2 create-security-group \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    --group-name ScalerEKSNodeSG \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    --description "Security group for EKS worker nodes" \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    --vpc-id $VPC_ID \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    --query "GroupId" --output text)
 
 # Allow all traffic within the security group
 aws ec2 authorize-security-group-ingress \
@@ -246,6 +248,21 @@ sleep 60
 # Verify nodes are registered
 kubectl get nodes
 ```
+
+
+
+alternative 
+eksctl create cluster --name=eksvilas --region=us-east-2 --zones=us-east-2a,us-east-2b --without-nodegroup 
+
+eksctl create nodegroup --cluster=eksvilas --region=us-east-2 --name=eksvilas-ng-public1 --node-type=t2.medium --nodes=2 --nodes-min=1 --nodes-max=3 --node-volume-size=30 --ssh-access --ssh-public-key=vilasohio --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access --spot
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+
+aws sts get-caller-identity
+aws eks update-kubeconfig --region us-east-2 --name eksvilas
+
+git clone https://github.com/vilasvarghesescaler/retail-store-shop-demo
 
 ## Step 7: Deploy the Retail Store Application
 
