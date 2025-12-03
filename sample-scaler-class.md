@@ -252,6 +252,12 @@ kubectl get nodes
 
 
 alternative 
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+    
+sudo mv /tmp/eksctl /usr/local/bin
+
+eksctl version
 eksctl create cluster --name=eksvilas --region=us-east-2 --zones=us-east-2a,us-east-2b --without-nodegroup 
 
 eksctl create nodegroup --cluster=eksvilas --region=us-east-2 --name=eksvilas-ng-public1 --node-type=t2.medium --nodes=2 --nodes-min=1 --nodes-max=3 --node-volume-size=30 --ssh-access --ssh-public-key=vilasohio --managed --asg-access --external-dns-access --full-ecr-access --appmesh-access --alb-ingress-access --spot
