@@ -286,11 +286,18 @@ done
 kubectl create namespace retail-store
 
 # Apply Kubernetes manifests
-kubectl apply -f k8s-manifests/ui-deployment.yaml
-kubectl apply -f k8s-manifests/catalog-deployment.yaml
-kubectl apply -f k8s-manifests/cart-deployment.yaml
-kubectl apply -f k8s-manifests/checkout-deployment.yaml
-kubectl apply -f k8s-manifests/orders-deployment.yaml
+#kubectl apply -f k8s-manifests/ui-deployment.yaml
+#kubectl apply -f k8s-manifests/catalog-deployment.yaml
+#kubectl apply -f k8s-manifests/cart-deployment.yaml
+#kubectl apply -f k8s-manifests/checkout-deployment.yaml
+#kubectl apply -f k8s-manifests/orders-deployment.yaml
+
+envsubst < k8s-manifests/ui-deployment.yaml | kubectl apply -f -
+envsubst < k8s-manifests/catalog-deployment.yaml | kubectl apply -f -
+envsubst < k8s-manifests/cart-deployment.yaml | kubectl apply -f -
+envsubst < k8s-manifests/checkout-deployment.yaml | kubectl apply -f -
+envsubst < k8s-manifests/orders-deployment.yaml | kubectl apply -f -
+
 
 # Check deployment status
 kubectl get pods -n retail-store
