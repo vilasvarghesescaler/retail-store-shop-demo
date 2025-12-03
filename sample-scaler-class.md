@@ -266,6 +266,7 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/d
 sudo mv /tmp/eksctl /usr/local/bin
 
 aws sts get-caller-identity
+
 aws eks update-kubeconfig --region us-east-2 --name eksvilas
 
 git clone https://github.com/vilasvarghesescaler/retail-store-shop-demo
