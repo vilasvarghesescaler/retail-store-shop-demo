@@ -363,6 +363,6 @@ If pods don't start:
 
 ---
 
-## Learn AWS by Doing with Govind
+## Learn AWS by Doing with Scaler
 
 This deployment guide is part of the "Learn AWS by Doing" series. Follow along to gain hands-on experience with AWS services and container orchestration.
